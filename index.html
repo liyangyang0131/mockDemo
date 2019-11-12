@@ -75,10 +75,10 @@
 
     <script>
         $(function () {
-            var result;
+            var result,count;
             $('.preview').click(function () {
                 var rulesCon = $('.template').val();
-                var count = $('.count').val();
+                count = $('.count').val() || 1;
                 if (!rulesCon) {
                     window.alert('输入错误！');
                     return;
@@ -90,14 +90,14 @@
                 var template = {};
                 template['lists|' + count] = [JSON.parse(rulesCon)]
                 result = Mock.mock(template);
-                if(!result.lists.length){
+                if(+count !==1 && !result.lists.length){  //数组
                     window.alert('数据生成发生错误！');
                     return;
                 }
                 $('.result').val(JSON.stringify(result.lists))
             })
             $('a').click(function(){
-                if(!result.lists.length){
+                if(+count !== 1 && !result.lists.length){
                     window.alert('下载内容为空！');
                     return;
                 }
