@@ -88,7 +88,18 @@
                     return;
                 }
                 var template = {};
-                template['lists|' + count] = [JSON.parse(rulesCon)]
+                // var reulesConObj = JSON.parse(rulesCon); // 严格按照json格式才能转换
+                var reulesConObj = eval("("+rulesCon+")");
+                // mock中正则是不需要双引号的，对双引号的处理
+                var reg = /^\/|\/$/g;
+                for(var k in reulesConObj){
+                    if(reg.test(reulesConObj[k])){
+                        var regV = reulesConObj[k].replace(reg,'');
+                        reulesConObj[k] = new RegExp(regV);
+                    }
+                }
+                template['lists|' + count] = [reulesConObj]
+
                 result = Mock.mock(template);
                 if(+count !==1 && !result.lists.length){  //数组
                     window.alert('数据生成发生错误！');
@@ -104,6 +115,9 @@
                 var href = 'data:text/txt;charset=utf-8,'+JSON.stringify(result.lists)
                 $(this).attr({'href':href})
             })
+            console.log(Mock.mock({
+                "creatorId|32": /[a-z0-9]/,
+            }))
         })
     </script>
 </body>
