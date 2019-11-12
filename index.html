@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="./mock.js"></script>
+    <script src="./jquery.js"></script>
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+        }
+
+        ul {
+            margin: 0;
+            padding: 0;
+        }
+
+        li {
+            list-style: none;
+        }
+
+        .clearfix:after {
+            content: '';
+            display: block;
+            clear: both;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .float {
+            float: left;
+            margin-right: 20px;
+        }
+
+        .label {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <section class="content">
+        <div class="clearfix">
+            <ul class="float">
+                <li class="label">数据模板：</li>
+                <li>
+                    <textarea name="mock规则" class="template" cols="50" rows="30"></textarea>
+                </li>
+            </ul>
+            <ul class="float">
+                <li class="label">数据数量：</li>
+                <li>
+                    <input type="count" class="count">
+                </li>
+            </ul>
+            <ul class="float">
+                <li>
+                    <button class="preview">预览</button>
+                </li>
+            </ul>
+            <ul class="float">
+                <li class="label">数据：</li>
+                <li>
+                    <textarea name="生成数据" class="result" cols="50" rows="30"></textarea>
+                </li>
+            </ul>
+        </div>
+        <a class="donload" href="data:text/txt;charset=utf-8" download="test.json">下载</a>
+    </section>
+
+    <script>
+        $(function () {
+            var result;
+            $('.preview').click(function () {
+                var rulesCon = $('.template').val();
+                var count = $('.count').val();
+                if (!rulesCon) {
+                    window.alert('输入错误！');
+                    return;
+                }
+                if (+count < 0 || +count % 1 !== 0) {
+                    window.alert('请输入整数！');
+                    return;
+                }
+                var template = {};
+                template['lists|' + count] = [JSON.parse(rulesCon)]
+                result = Mock.mock(template);
+                if(!result.lists.length){
+                    window.alert('数据生成发生错误！');
+                    return;
+                }
+                $('.result').val(JSON.stringify(result.lists))
+            })
+            $('a').click(function(){
+                if(!result.lists.length){
+                    window.alert('下载内容为空！');
+                    return;
+                }
+                var href = 'data:text/txt;charset=utf-8,'+JSON.stringify(result.lists)
+                $(this).attr({'href':href})
+            })
+        })
+    </script>
+</body>
+
+</html>
